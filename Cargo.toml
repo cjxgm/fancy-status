@@ -4,5 +4,6 @@ name = "fancy-status"
 version = "0.1.0"
 
 [dependencies]
-clap = "2"
+clap = "2.20"
+typed-arena = "1.2"
 
