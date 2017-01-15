@@ -33,9 +33,9 @@ impl Eq for Color888 {}
 impl From<Color888> for Colorf32 {
     fn from(color: Color888) -> Self {
         let Color(r, g, b) = color;
-        let r = r as f32 / 255f32;
-        let g = g as f32 / 255f32;
-        let b = b as f32 / 255f32;
+        let r = r as f32 / 255_f32;
+        let g = g as f32 / 255_f32;
+        let b = b as f32 / 255_f32;
         Color(r, g, b)
     }
 }
@@ -43,9 +43,9 @@ impl From<Color888> for Colorf32 {
 impl Colorf32 {
     fn clamp_to_888(self) -> Color888 {
         let Color(r, g, b) = self.clamp();
-        let r = (r * 255f32).min(255f32) as u8;
-        let g = (g * 255f32).min(255f32) as u8;
-        let b = (b * 255f32).min(255f32) as u8;
+        let r = (r * 255_f32).min(255_f32) as u8;
+        let g = (g * 255_f32).min(255_f32) as u8;
+        let b = (b * 255_f32).min(255_f32) as u8;
         Color(r, g, b)
     }
 
@@ -58,7 +58,7 @@ impl Colorf32 {
     }
 
     fn clamp(self) -> Self {
-        self.clamp_with(0f32, 1f32)
+        self.clamp_with(0_f32, 1_f32)
     }
 }
 
@@ -80,7 +80,7 @@ mod tests {
     fn clampped_down_conversion() {
         let max = Color(255, 255, 255);
         for i in 256..512 {
-            let a = i as f32 / 255f32;
+            let a = i as f32 / 255_f32;
             let color = Color(a, a, a).clamp_to_888();
             assert_eq!(color, max);
         }
@@ -90,7 +90,7 @@ mod tests {
     fn clampped_up_conversion() {
         let min = Color(0, 0, 0);
         for i in -256..0 {
-            let a = i as f32 / 255f32;
+            let a = i as f32 / 255_f32;
             let color = Color(a, a, a).clamp_to_888();
             assert_eq!(color, min);
         }
@@ -103,4 +103,3 @@ mod tests {
         assert_eq!(Color(1, 254, 10).to_string(), "01fe0a");
     }
 }
-
