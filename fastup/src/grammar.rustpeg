@@ -1,0 +1,34 @@
+use super::{Document, Node};
+use color::{Color, Color888};
+
+color_component -> u8
+    = n:$([0-9a-f]*<2>) { u8::from_str_radix(n, 16).unwrap() }
+color -> Color888
+    = c:color_component*<3> { Color(c[0], c[1], c[2]) }
+
+escaped_text -> char
+    = "\\" c:$(.) { c.chars().next().unwrap() }
+safe_text -> char
+    = c:$([^<>()\[\]{}\\|]) { c.chars().next().unwrap() }
+text_string -> String
+    = t:(escaped_text / safe_text)+ { t.into_iter().collect() }
+text -> Node
+    = t:text_string { Node::Text(t) }
+
+foreground -> Node
+    = "(" c:color ":" [ \t\n]* d:document ")" { Node::Foreground(c.into(), d) }
+background -> Node
+    = "[" c:color ":" [ \t\n]* d:document "]" { Node::Background(c.into(), d) }
+bold -> Node
+    = "{" d:document "}" { Node::Bold(d) }
+
+widget_arg -> String
+    = "|" t:text_string? { t.unwrap_or("".into()) }
+widget -> Node
+    = "<" n:text_string a:widget_arg* ">" { Node::Widget(n, a) }
+
+piece -> Node
+    = text / foreground / background / bold / widget
+
+pub document -> Document = p:piece* { Document(p) }
+
