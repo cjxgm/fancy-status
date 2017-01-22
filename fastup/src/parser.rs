@@ -18,6 +18,11 @@ pub enum Node {
     Widget(String, Vec<String>),
 }
 
+impl From<Vec<Node>> for Document {
+    fn from(nodes: Vec<Node>) -> Self {
+        Document(nodes)
+    }
+}
 
 mod grammar {
     include!(concat!(env!("OUT_DIR"), "/grammar.rs"));
