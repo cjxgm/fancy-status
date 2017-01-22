@@ -1,9 +1,9 @@
 [root]
-name = "fancy-status"
+name = "fastup"
 version = "0.1.0"
 dependencies = [
- "clap 2.20.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "typed-arena 1.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "color 0.1.0",
+ "peg 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -32,6 +32,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "color"
+version = "0.1.0"
+
+[[package]]
+name = "fancy-status"
+version = "0.1.0"
+dependencies = [
+ "clap 2.20.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "color 0.1.0",
+ "fastup 0.1.0",
+ "typed-arena 1.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
 name = "kernel32-sys"
 version = "0.2.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -43,6 +57,19 @@ dependencies = [
 [[package]]
 name = "libc"
 version = "0.2.18"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
+name = "peg"
+version = "0.5.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+dependencies = [
+ "quote 0.3.12 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "quote"
+version = "0.3.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
@@ -96,6 +123,8 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 "checksum clap 2.20.0 (registry+https://github.com/rust-lang/crates.io-index)" = "dd1cb22651881e6379f4492d0d572ecb8022faef8c8aaae285bb18cb307bfa30"
 "checksum kernel32-sys 0.2.2 (registry+https://github.com/rust-lang/crates.io-index)" = "7507624b29483431c0ba2d82aece8ca6cdba9382bff4ddd0f7490560c056098d"
 "checksum libc 0.2.18 (registry+https://github.com/rust-lang/crates.io-index)" = "a51822fc847e7a8101514d1d44e354ba2ffa7d4c194dcab48870740e327cac70"
+"checksum peg 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)" = "f1f701f2e9801f642ff4511110a1c10e8b28059b5905c6c45405a4b2553cd71b"
+"checksum quote 0.3.12 (registry+https://github.com/rust-lang/crates.io-index)" = "e7b44fd83db28b83c1c58187159934906e5e955c812e211df413b76b03c909a5"
 "checksum strsim 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)" = "b4d15c810519a91cf877e7e36e63fe068815c678181439f2f29e2562147c3694"
 "checksum term_size 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)" = "3f7f5f3f71b0040cecc71af239414c23fd3c73570f5ff54cf50e03cef637f2a0"
 "checksum typed-arena 1.2.0 (registry+https://github.com/rust-lang/crates.io-index)" = "8e2f9dc90da4f9d66ffc9ad3ead2c7d57582a26f4a3292d2ce7011bd29965100"

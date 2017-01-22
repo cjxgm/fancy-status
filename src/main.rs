@@ -6,6 +6,7 @@
 #[macro_use]
 extern crate clap;
 extern crate typed_arena;
+extern crate fastup;
 
 mod app;
 mod output;
@@ -13,12 +14,13 @@ mod output;
 mod utils;
 
 use utils::*;
+use std::process;
 
 fn main() {
     parse_args();
     if let Err(e) = app::run() {
         errln!("Error: {:?}", e);
-        ::std::process::exit(1);
+        process::exit(1);
     }
 }
 
