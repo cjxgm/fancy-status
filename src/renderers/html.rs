@@ -1,12 +1,12 @@
-use super::renderer::{self, Result};
+use super::renderer;
 use fastup::Document;
 
 #[derive(Debug, Copy, Clone, Default)]
 pub struct Renderer;
 
 impl renderer::Renderer for Renderer {
-    fn render(&self, doc: &Document) -> Result<String> {
-        Ok("".into())
+    fn render(&self, doc: &Document) -> String {
+        "".into()
     }
 }
 

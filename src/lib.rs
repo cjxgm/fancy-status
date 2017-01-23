@@ -10,7 +10,6 @@ pub mod widgets;
 #[derive(Debug)]
 pub enum Error {
     ParseFailed(String),
-    RenderFailed(String),
     RendererNotFound,
 }
 
@@ -22,6 +21,16 @@ pub fn render_status(source: &str, renderer_name: &str) -> Result<String> {
     let doc = parse(&source).map_err(Error::ParseFailed)?;
     let doc = widgets::expand(doc);
     let renderer = renderers::make(renderer_name).ok_or(Error::RendererNotFound)?;
-    renderer.render(&doc).map_err(Error::RenderFailed)
+    Ok(renderer.render(&doc))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn dump() {
+        println!("{:?}", render_status("<hello>[", "dump"));
+    }
 }
 

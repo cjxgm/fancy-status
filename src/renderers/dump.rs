@@ -6,7 +6,7 @@ pub struct Renderer;
 
 impl renderer::Renderer for Renderer {
     fn render(&self, doc: &Document) -> String {
-        "".into()
+        format!("{:?}", doc)
     }
 }
 
