@@ -11,3 +11,7 @@ color = { path = "color" }
 
 [workspace]
 
+[[bin]]
+name = "fancy-status"
+doc = false
+
