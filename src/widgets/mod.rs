@@ -14,7 +14,7 @@ fn expand_node(node: Node) -> Node {
         Background(color, doc) => Background(color, expand(doc)),
         Bold(doc) => Bold(expand(doc)),
         Widget(..) => {
-            expand_node(parse("[ff0000: (ffffff: {{\\<STUB: unimplemented\\>}})]")
+            expand_node(parse("[ff0000: (ffffff: {\\<STUB: unimplemented\\>})]")
                 .unwrap()
                 .0
                 .into_iter()
