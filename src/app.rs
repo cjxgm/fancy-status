@@ -1,5 +1,5 @@
 
-use output::{StdoutWriter, Writer};
+use fast::output::{StdoutWriter, Writer};
 
 #[derive(Debug)]
 pub enum Error {

@@ -5,15 +5,12 @@
 
 #[macro_use]
 extern crate clap;
-extern crate typed_arena;
-extern crate fastup;
+#[macro_use]
+extern crate fancy_status as fast;
 
 mod app;
-mod output;
-#[macro_use]
-mod utils;
 
-use utils::*;
+use fast::utils::*;
 use std::process;
 
 fn main() {
