@@ -28,9 +28,22 @@ pub fn render_status(source: &str, renderer_name: &str) -> Result<String> {
 mod tests {
     use super::*;
 
+    const TEST_SOURCE: &'static str = r#"hello <hello> {world}"#;
+
     #[test]
     fn dump() {
-        println!("{:?}", render_status("<hello>[", "dump"));
+        println!("{}", render_status(TEST_SOURCE, "dump").unwrap());
+    }
+
+    #[test]
+    fn html() {
+        println!("{}", render_status(TEST_SOURCE, "html").unwrap());
+    }
+
+    #[test]
+    #[should_panic]
+    fn renderer_not_found() {
+        println!("{}", render_status(TEST_SOURCE, "not exists").unwrap());
     }
 }
 
