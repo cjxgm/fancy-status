@@ -48,7 +48,7 @@ mod tests {
     fn expand_widgets(doc: Document) -> Document {
         doc.0.into_iter().map(|node| -> Node {
             match node {
-                Text(_) => node,
+                Text(..) => node,
                 Foreground(color, doc) => Foreground(color, expand_widgets(doc)),
                 Background(color, doc) => Background(color, expand_widgets(doc)),
                 Bold(doc) => Bold(expand_widgets(doc)),
