@@ -1,3 +1,4 @@
+extern crate color;
 extern crate fastup;
 use fastup::parse;
 
@@ -28,7 +29,7 @@ pub fn render_status(source: &str, renderer_name: &str) -> Result<String> {
 mod tests {
     use super::*;
 
-    const TEST_SOURCE: &'static str = r#"hello <hello> {world}"#;
+    const TEST_SOURCE: &'static str = r"[ffffff:(000000: hello [cceeff: world(0000ff: yes) or {\[n\]o}] <date|hello|world> up)]";
 
     #[test]
     fn dump() {
@@ -38,6 +39,11 @@ mod tests {
     #[test]
     fn html() {
         println!("{}", render_status(TEST_SOURCE, "html").unwrap());
+    }
+
+    #[test]
+    fn ansi() {
+        println!("{}", render_status(TEST_SOURCE, "ansi").unwrap());
     }
 
     #[test]
