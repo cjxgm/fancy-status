@@ -1,6 +1,6 @@
 extern crate time;
 use self::time::Tm as Time;
-use fastup::{parse, Node};
+use fastup::{parse_for_first_node, Node};
 
 #[derive(Debug, Copy, Clone, Default)]
 pub struct Widget;
@@ -15,7 +15,9 @@ impl super::Widget for Widget {
 }
 
 fn node_from_time(t: Time) -> Node {
-    let source = format!("(000000: [ff8800: \\ {} ] (88ff00: {:04}-{:02}-{:02}) (55aaff: {:02}:{:02}:{:02}))",
+    let source = format!("(000000: [ff8800: \\ {} ] \
+                                   (88ff00: {:04}-{:02}-{:02}) \
+                                   (55aaff: {:02}:{:02}:{:02}))",
                          stylised_weekday(t.tm_wday),
                          t.tm_year + 1900,
                          t.tm_mon + 1,
@@ -23,7 +25,7 @@ fn node_from_time(t: Time) -> Node {
                          t.tm_hour,
                          t.tm_min,
                          t.tm_sec);
-    parse(&source).unwrap().0.into_iter().next().unwrap()
+    parse_for_first_node(&source).unwrap()
 }
 
 const WEEKDAYS: &'static str = "×12345·";

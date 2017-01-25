@@ -1,4 +1,4 @@
-use fastup::{Document, Node, parse};
+use fastup::{Document, Node, parse_for_first_node};
 use fastup::Node::{Text, Foreground, Background, Bold};
 
 /// Expand widgets to nodes until there are no widgets in the node tree
@@ -33,12 +33,10 @@ fn no_widget_error_node(widget_name: &str) -> Node {
 /// Create a `Node` as formatted error message `err`.
 /// The `err` should be a valid fastup markup text.
 pub fn error_node(err: &str) -> Node {
-    parse(&format!("[551100: (ff6666: \\ (44ccdd:\\<)ERROR: {}(44ccdd:\\>) )]", err))
-        .unwrap()
-        .0
-        .into_iter()
-        .next()
-        .unwrap()
+    let source = format!("[551100: (ff6666: \
+                            \\ (44ccdd:\\<)ERROR: {}(44ccdd:\\>) )]",
+                         err);
+    parse_for_first_node(&source).unwrap()
 }
 
 factory! {

@@ -28,8 +28,21 @@ mod grammar {
     include!(concat!(env!("OUT_DIR"), "/grammar.rs"));
 }
 
+/// Parse `input` string into a `Document`.
 pub fn parse(input: &str) -> Result<Document, String> {
     grammar::document(input).map_err(|e| e.to_string())
+}
+
+/// Parse `input` string into a `Document`. A `Document` is a
+/// sequence of `Node`s. Take the first `Node` and discard all
+/// the rest.
+pub fn parse_for_first_node(input: &str) -> Result<Node, String> {
+    parse(input).and_then(|doc| {
+        doc.0
+            .into_iter()
+            .next()
+            .ok_or("not a single node".into())
+    })
 }
 
 #[cfg(test)]
