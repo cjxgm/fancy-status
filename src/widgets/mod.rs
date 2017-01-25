@@ -1,7 +1,5 @@
-pub mod widget;
-
 use fastup::{Document, Node, parse};
-use fastup::Node::*;
+use fastup::Node::{Text, Foreground, Background, Bold};
 
 /// Expand widgets to nodes until there are no widgets in the node tree
 /// any more.
@@ -18,14 +16,30 @@ fn expand_node(node: Node) -> Node {
         Foreground(color, doc) => Foreground(color, expand(doc)),
         Background(color, doc) => Background(color, expand(doc)),
         Bold(doc) => Bold(expand(doc)),
-        Widget(..) => {
-            expand_node(parse("[ff0000: (ffffff: {\\<STUB: unimplemented\\>})]")
-                .unwrap()
-                .0
-                .into_iter()
-                .next()
-                .unwrap())
+        Node::Widget(..) => {
+            expand_node(error_node("unimplemented"))
         }
+    }
+}
+
+/// Create a `Node` as formatted error message `err`.
+/// The `err` should be a valid fastup markup text.
+pub fn error_node(err: &str) -> Node {
+    parse(&format!("[ff0000: (ffffff: {{\\<ERROR: {}\\>}})]", err))
+        .unwrap()
+        .0
+        .into_iter()
+        .next()
+        .unwrap()
+}
+
+factory! {
+    pub trait Widget {
+        fn expand(&self, args: Vec<String>) -> Node;
+    }
+
+    /// Create a widget by `name`.
+    make {
     }
 }
 
