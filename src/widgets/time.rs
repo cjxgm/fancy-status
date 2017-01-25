@@ -1,5 +1,4 @@
-extern crate time;
-use self::time::Tm as Time;
+use time::{self, Tm as Time};
 use fastup::{parse_for_first_node, Node};
 
 #[derive(Debug, Copy, Clone, Default)]

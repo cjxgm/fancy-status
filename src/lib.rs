@@ -1,3 +1,5 @@
+extern crate time;
+extern crate sysinfo;
 extern crate color;
 extern crate fastup;
 use fastup::parse;

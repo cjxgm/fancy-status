@@ -42,6 +42,7 @@ dependencies = [
  "clap 2.20.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "color 0.1.0",
  "fastup 0.1.0",
+ "sysinfo 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "time 0.1.36 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
@@ -81,6 +82,14 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 name = "strsim"
 version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
+name = "sysinfo"
+version = "0.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+dependencies = [
+ "libc 0.2.18 (registry+https://github.com/rust-lang/crates.io-index)",
+]
 
 [[package]]
 name = "term_size"
@@ -138,6 +147,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 "checksum quote 0.3.12 (registry+https://github.com/rust-lang/crates.io-index)" = "e7b44fd83db28b83c1c58187159934906e5e955c812e211df413b76b03c909a5"
 "checksum redox_syscall 0.1.16 (registry+https://github.com/rust-lang/crates.io-index)" = "8dd35cc9a8bdec562c757e3d43c1526b5c6d2653e23e2315065bc25556550753"
 "checksum strsim 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)" = "b4d15c810519a91cf877e7e36e63fe068815c678181439f2f29e2562147c3694"
+"checksum sysinfo 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)" = "071b8a0ae2f60c93c78872d6ca375b659b4818ef4faf706ca409c47292a49102"
 "checksum term_size 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)" = "3f7f5f3f71b0040cecc71af239414c23fd3c73570f5ff54cf50e03cef637f2a0"
 "checksum time 0.1.36 (registry+https://github.com/rust-lang/crates.io-index)" = "211b63c112206356ef1ff9b19355f43740fc3f85960c598a93d3a3d3ba7beade"
 "checksum unicode-segmentation 1.0.1 (registry+https://github.com/rust-lang/crates.io-index)" = "7baebdc1df1363fa66161fca2fe047e4f4209011cc7e045948298996afdf85df"
