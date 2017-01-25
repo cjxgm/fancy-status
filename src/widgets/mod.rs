@@ -48,6 +48,7 @@ factory! {
 
     /// Create a widget by `name`.
     make {
+        time;
     }
 }
 

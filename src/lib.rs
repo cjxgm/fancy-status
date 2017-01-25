@@ -29,7 +29,7 @@ pub fn render_status(source: &str, renderer_name: &str) -> Result<String> {
 mod tests {
     use super::*;
 
-    const TEST_SOURCE: &'static str = r"[ffffff:(000000: hello [cceeff: world(0000ff: yes) or {\[n\]o}] <date|hello|world> up)]";
+    const TEST_SOURCE: &'static str = r"[ffffff:(000000: hello [cceeff: world(0000ff: yes) or {\[n\]o}] <time|hello|world> up)]";
 
     #[test]
     fn dump() {
