@@ -16,16 +16,24 @@ fn expand_node(node: Node) -> Node {
         Foreground(color, doc) => Foreground(color, expand(doc)),
         Background(color, doc) => Background(color, expand(doc)),
         Bold(doc) => Bold(expand(doc)),
-        Node::Widget(..) => {
-            expand_node(error_node("unimplemented"))
+        Node::Widget(name, args) => {
+            let node = make(&name)
+                .map(|widget| widget.expand(args))
+                .unwrap_or_else(|| no_widget_error_node(&name));
+            expand_node(node)
         }
     }
+}
+
+fn no_widget_error_node(widget_name: &str) -> Node {
+    let err = format!("no such widget: (ccdd44: {})", widget_name);
+    error_node(&err)
 }
 
 /// Create a `Node` as formatted error message `err`.
 /// The `err` should be a valid fastup markup text.
 pub fn error_node(err: &str) -> Node {
-    parse(&format!("[ff0000: (ffffff: {{\\<ERROR: {}\\>}})]", err))
+    parse(&format!("[551100: (ff6666: \\ (44ccdd:\\<)ERROR: {}(44ccdd:\\>) )]", err))
         .unwrap()
         .0
         .into_iter()
