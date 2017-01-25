@@ -1,11 +1,10 @@
-use super::renderer;
 use fastup::{Document, Node};
 use fastup::Node::*;
 
 #[derive(Debug, Copy, Clone, Default)]
 pub struct Renderer;
 
-impl renderer::Renderer for Renderer {
+impl super::Renderer for Renderer {
     fn render(&self, doc: &Document) -> String {
         dump_from_document(doc, "")
     }

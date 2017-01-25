@@ -1,4 +1,3 @@
-use super::renderer;
 use fastup::{Document, Node};
 use fastup::Node::*;
 use color::{Color, Color888};
@@ -7,7 +6,7 @@ use std::fmt;
 #[derive(Debug, Copy, Clone, Default)]
 pub struct Renderer;
 
-impl renderer::Renderer for Renderer {
+impl super::Renderer for Renderer {
     fn render(&self, doc: &Document) -> String {
         let env = Environment::default();
         ansi_from_document(doc, &env) + "\x1b[0m"
