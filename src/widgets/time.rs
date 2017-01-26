@@ -1,5 +1,6 @@
 use time::{self, Tm as Time};
 use fastup::{parse_for_first_node, Node};
+use super::error_node;
 
 #[derive(Debug, Copy, Clone, Default)]
 pub struct Widget;
@@ -8,7 +9,7 @@ impl super::Widget for Widget {
     fn expand(&self, args: Vec<String>) -> Node {
         match args.len() {
             0 => node_from_time(time::now()),
-            _ => super::error_node("(ccdd44: time) takes no argument"),
+            _ => error_node("(ccdd44: time) takes no argument"),
         }
     }
 }
