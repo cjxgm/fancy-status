@@ -1,4 +1,4 @@
-use color::Colorf32;
+use color::{Colorf32, Color888};
 
 /// Document is a sequence of nodes concatenated together.
 #[derive(Debug)]
@@ -43,6 +43,12 @@ pub fn parse_for_first_node(input: &str) -> Result<Node, String> {
             .next()
             .ok_or("not a single node".into())
     })
+}
+
+/// Parse `input` string into a `Color888`.
+/// `input` should be in `rrggbb` format, all in lowercase.
+pub fn parse_color(input: &str) -> Result<Color888, String> {
+    grammar::color(input).map_err(|e| e.to_string())
 }
 
 #[cfg(test)]

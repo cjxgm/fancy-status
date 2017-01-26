@@ -3,7 +3,7 @@ use color::{Color, Color888};
 
 color_component -> u8
     = n:$([0-9a-f]*<2>) { u8::from_str_radix(n, 16).unwrap() }
-color -> Color888
+pub color -> Color888
     = #quiet<c:color_component*<3> { Color(c[0], c[1], c[2]) }> / #expected("color value rrggbb (all in lowercase)")
 
 escaped_text -> char
