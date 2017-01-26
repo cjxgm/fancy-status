@@ -11,6 +11,7 @@ pub fn run() -> Result<(), Error> {
     StdoutWriter::default().write("Hello world");
     StdoutWriter::default().write(&render_status("hello <time> {world}", "dump").unwrap());
     StdoutWriter::default().write(&render_status("hello <time> {world}", "ansi").unwrap());
+    StdoutWriter::default().write(&render_status("<gradient|20|000000|ffffff>", "ansi").unwrap());
     Err(Error::Todo)
 }
 
