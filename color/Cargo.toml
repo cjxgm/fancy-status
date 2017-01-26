@@ -4,3 +4,5 @@ version = "0.1.0"
 authors = ["Giumo X. Clanjor (哆啦比猫/兰威举) <cjxgm@126.com>"]
 
 [dependencies]
+palette = "0.2"
+
