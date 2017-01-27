@@ -1,7 +1,7 @@
 //! # A strongly restrictive color type.
 use std::fmt;
 use palette::pixel::Srgb;
-use palette::Rgb;
+use palette::{Rgb, Lch, Mix};
 
 /// It is guaranteed that `T` can be and will always be only either `u8` or `f32`.
 /// It can also be guaranteed that `Display` is not and will never be implemented
@@ -37,7 +37,7 @@ impl From<Color888> for Colorf32 {
     /// Convert `Color888` (sRGB) to `Colorf32` (Linear RGB).
     fn from(color: Color888) -> Self {
         let Color(r, g, b) = color;
-        let rgb: Rgb<f32> = Srgb::new_u8(r, g, b).into();
+        let rgb = Rgb::<f32>::from(Srgb::new_u8(r, g, b));
         let Rgb { red: r, green: g, blue: b } = rgb;
         Color(r, g, b)
     }
@@ -51,7 +51,7 @@ impl Colorf32 {
         const DELTA: f32 = 1e-6;
 
         let Color(r, g, b) = self;
-        let srgb: Srgb = Rgb::new(r + DELTA, g + DELTA, b + DELTA).into();
+        let srgb = Srgb::from(Rgb::new(r + DELTA, g + DELTA, b + DELTA));
         let Srgb { red: r, green: g, blue: b, .. } = srgb;
         let Color(r, g, b) = Color(r * 255.0, g * 255.0, b * 255.0).clamp_with(0.0, 255.0);
         Color(r as u8, g as u8, b as u8)
@@ -69,6 +69,29 @@ impl Colorf32 {
     /// Clamp to [0, 1].
     pub fn clamp(self) -> Self {
         self.clamp_with(0.0, 1.0)
+    }
+
+    /// Linear interpolate between colors.
+    /// This is done in the CIE LCHab color space.
+    pub fn mix(self, other: Self, factor: f32) -> Self {
+        let Color(r1, g1, b1) = self;
+        let Color(r2, g2, b2) = other;
+        let lch1 = Lch::from(Rgb::new(r1, g1, b1));
+        let lch2 = Lch::from(Rgb::new(r2, g2, b2));
+        let lch = lch1.mix(&lch2, factor);
+        let Rgb { red: r, green: g, blue: b } = Rgb::from(lch);
+        Color(r, g, b)
+    }
+
+    /// Linear interpolate between colors.
+    /// This is done in the Linear RGB color space.
+    pub fn mix_fast(self, other: Self, factor: f32) -> Self {
+        let Color(r1, g1, b1) = self;
+        let Color(r2, g2, b2) = other;
+        let r = (1.0 - factor) * r1 + factor * r2;
+        let g = (1.0 - factor) * g1 + factor * g2;
+        let b = (1.0 - factor) * b1 + factor * b2;
+        Color(r, g, b)
     }
 }
 
@@ -113,6 +136,19 @@ mod tests {
         assert_eq!(Color(0, 0, 0).to_string(), "000000");
         assert_eq!(Color(255, 255, 255).to_string(), "ffffff");
         assert_eq!(Color(1, 254, 10).to_string(), "01fe0a");
+    }
+
+    // TODO: automate the checking of this test.
+    #[test]
+    fn mixing() {
+        let c1 = Color(1.0, 0.0, 0.0);
+        let c2 = Color(0.0, 0.0, 1.0);
+        for i in 0..256 {
+            let a = (i as f32) / 255.0;
+            let mix1 = c1.mix(c2, a).clamp_to_888();
+            let mix2 = c1.mix_fast(c2, a).clamp_to_888();
+            println!("{} {}", mix1, mix2);
+        }
     }
 }
 
