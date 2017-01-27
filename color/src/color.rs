@@ -1,6 +1,7 @@
 //! # A strongly restrictive color type.
-
 use std::fmt;
+use palette::pixel::Srgb;
+use palette::Rgb;
 
 /// It is guaranteed that `T` can be and will always be only either `u8` or `f32`.
 /// It can also be guaranteed that `Display` is not and will never be implemented
@@ -17,8 +18,10 @@ use std::fmt;
 pub struct Color<T>(pub T, pub T, pub T);
 
 /// `Color888` can only do IO (convert to and from strings), and some simple equality tests.
+/// Color is sRGB encoded.
 pub type Color888 = Color<u8>;
 /// `Colorf32` can only do arithmetics and convert to/from `Color888`.
+/// Color is Linear RGB encoded.
 pub type Colorf32 = Color<f32>;
 
 impl fmt::Display for Color888 {
@@ -31,24 +34,30 @@ impl fmt::Display for Color888 {
 impl Eq for Color888 {}
 
 impl From<Color888> for Colorf32 {
+    /// Convert `Color888` (sRGB) to `Colorf32` (Linear RGB).
     fn from(color: Color888) -> Self {
         let Color(r, g, b) = color;
-        let r = r as f32 / 255_f32;
-        let g = g as f32 / 255_f32;
-        let b = b as f32 / 255_f32;
+        let rgb: Rgb<f32> = Srgb::new_u8(r, g, b).into();
+        let Rgb { red: r, green: g, blue: b } = rgb;
         Color(r, g, b)
     }
 }
 
 impl Colorf32 {
+    /// Convert `Colorf32` (Linear RGB) to `Color888` (sRGB).
     pub fn clamp_to_888(self) -> Color888 {
-        let Color(r, g, b) = self.clamp();
-        let r = (r * 255_f32).min(255_f32) as u8;
-        let g = (g * 255_f32).min(255_f32) as u8;
-        let b = (b * 255_f32).min(255_f32) as u8;
-        Color(r, g, b)
+        /// This is used to "reduce" conversion error, so that
+        /// `lossless_conversion` test can pass.
+        const DELTA: f32 = 1e-6;
+
+        let Color(r, g, b) = self;
+        let srgb: Srgb = Rgb::new(r + DELTA, g + DELTA, b + DELTA).into();
+        let Srgb { red: r, green: g, blue: b, .. } = srgb;
+        let Color(r, g, b) = Color(r * 255.0, g * 255.0, b * 255.0).clamp_with(0.0, 255.0);
+        Color(r as u8, g as u8, b as u8)
     }
 
+    /// Clamp to [`min`, `max`].
     pub fn clamp_with(self, min: f32, max: f32) -> Self {
         let Color(r, g, b) = self;
         let r = r.max(min).min(max);
@@ -57,8 +66,9 @@ impl Colorf32 {
         Color(r, g, b)
     }
 
+    /// Clamp to [0, 1].
     pub fn clamp(self) -> Self {
-        self.clamp_with(0_f32, 1_f32)
+        self.clamp_with(0.0, 1.0)
     }
 }
 
@@ -66,6 +76,8 @@ impl Colorf32 {
 mod tests {
     use super::*;
 
+    /// When this test fails, you may want to increase the `DELTA` constant
+    /// in `Colorf32::clamp_to_888()`.
     #[test]
     fn lossless_conversion() {
         for i in 0..256 {
