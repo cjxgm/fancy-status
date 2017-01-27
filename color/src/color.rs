@@ -37,8 +37,8 @@ impl From<Color888> for Colorf32 {
     /// Convert `Color888` (sRGB) to `Colorf32` (Linear RGB).
     fn from(color: Color888) -> Self {
         let Color(r, g, b) = color;
-        let rgb = Rgb::<f32>::from(Srgb::new_u8(r, g, b));
-        let Rgb { red: r, green: g, blue: b } = rgb;
+        let srgb = Srgb::new_u8(r, g, b);
+        let Rgb { red: r, green: g, blue: b } = srgb.into();
         Color(r, g, b)
     }
 }
@@ -51,9 +51,10 @@ impl Colorf32 {
         const DELTA: f32 = 1e-6;
 
         let Color(r, g, b) = self;
-        let srgb = Srgb::from(Rgb::new(r + DELTA, g + DELTA, b + DELTA));
-        let Srgb { red: r, green: g, blue: b, .. } = srgb;
-        let Color(r, g, b) = Color(r * 255.0, g * 255.0, b * 255.0).clamp_with(0.0, 255.0);
+        let rgb = Rgb::new(r + DELTA, g + DELTA, b + DELTA);
+        let Srgb { red: r, green: g, blue: b, .. } = rgb.into();
+        let color = Color(r * 255.0, g * 255.0, b * 255.0);
+        let Color(r, g, b) = color.clamp_with(0.0, 255.0);
         Color(r as u8, g as u8, b as u8)
     }
 
@@ -79,7 +80,7 @@ impl Colorf32 {
         let lch1 = Lch::from(Rgb::new(r1, g1, b1));
         let lch2 = Lch::from(Rgb::new(r2, g2, b2));
         let lch = lch1.mix(&lch2, factor);
-        let Rgb { red: r, green: g, blue: b } = Rgb::from(lch);
+        let Rgb { red: r, green: g, blue: b } = lch.into();
         Color(r, g, b)
     }
 
@@ -100,7 +101,8 @@ impl Colorf32 {
     /// This is done in the CIE Lab color space by setting the L component.
     pub fn set_lightness(self, lightness: f32) -> Self {
         let Color(r, g, b) = self;
-        let lab = Lab { l: lightness, ..Rgb::new(r, g, b).into() };
+        let rgb = Rgb::new(r, g, b);
+        let lab = Lab { l: lightness, ..rgb.into() };
         let Rgb { red: r, green: g, blue: b } = lab.into();
         Color(r, g, b)
     }
