@@ -48,6 +48,7 @@ factory! {
     make {
         time;
         gradient;
+        cpu;
     }
 }
 
