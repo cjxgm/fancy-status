@@ -59,7 +59,7 @@ pub fn escape_for_text(input: &str) -> String {
 
 fn escape_char_for_text(ch: char) -> String {
     match ch {
-        '<' | '>' | '(' | ')' | '[' | ']' | '{' | '}' | '\\' | '|' => {
+        '<' | '>' | '(' | ')' | '[' | ']' | '{' | '}' | '\\' | '|' | ' ' | '\t' | '\n' => {
             let mut s = '\\'.to_string();
             s.push(ch);
             s
@@ -80,8 +80,8 @@ mod test {
 
     #[test]
     fn escape() {
-        let escaped = escape_for_text("hello <([{\\|}])> world");
-        let should_be = "hello \\<\\(\\[\\{\\\\\\|\\}\\]\\)\\> world";
+        let escaped = escape_for_text("hello <([{\\|}])> world\nyes\tno");
+        let should_be = "hello\\ \\<\\(\\[\\{\\\\\\|\\}\\]\\)\\>\\ world\\\nyes\\\tno";
         assert_eq!(escaped, should_be);
     }
 }
