@@ -1,4 +1,4 @@
-use color::Color888;
+use color::{Color888, Colorf32};
 use fastup::{parse_for_first_node, Node, parse_color};
 use super::error_node;
 
@@ -31,6 +31,17 @@ fn try_node_from_args(args: Vec<String>) -> Result<Node, String> {
 
 fn gradient_node(width: i32, color1: Color888, color2: Color888) -> Node {
     assert!(width >= 2);
-    parse_for_first_node("(ff0000: TODO)").unwrap()
+    let color1 = Colorf32::from(color1);
+    let color2 = Colorf32::from(color2);
+    let gradient = (0..width)
+        .map(|x| {
+            let x = (x as f32) / ((width - 1) as f32);
+            let mix1 = color1.mix(color2, x).clamp_to_888();
+            let mix2 = color1.mix_fast(color2, x).clamp_to_888();
+            format!("[{}: ({}: ▄)]", mix1, mix2)
+        })
+        .collect::<String>();
+    let gradient = format!("(000000: {})", gradient);
+    parse_for_first_node(&gradient).unwrap()
 }
 
