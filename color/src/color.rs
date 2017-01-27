@@ -1,7 +1,7 @@
 //! # A strongly restrictive color type.
 use std::fmt;
 use palette::pixel::Srgb;
-use palette::{Rgb, Lch, Mix};
+use palette::{Rgb, Lch, Lab, Mix};
 
 /// It is guaranteed that `T` can be and will always be only either `u8` or `f32`.
 /// It can also be guaranteed that `Display` is not and will never be implemented
@@ -93,6 +93,17 @@ impl Colorf32 {
         let b = (1.0 - factor) * b1 + factor * b2;
         Color(r, g, b)
     }
+
+    /// Modify the perceptual lightness of current color.
+    /// A value of `0.0` gives darkest color and `1.0` gives whitest.
+    ///
+    /// This is done in the CIE Lab color space by setting the L component.
+    pub fn set_lightness(self, lightness: f32) -> Self {
+        let Color(r, g, b) = self;
+        let lab = Lab { l: lightness, ..Rgb::new(r, g, b).into() };
+        let Rgb { red: r, green: g, blue: b } = lab.into();
+        Color(r, g, b)
+    }
 }
 
 #[cfg(test)]
@@ -149,6 +160,15 @@ mod tests {
             let mix2 = c1.mix_fast(c2, a).clamp_to_888();
             println!("{} {}", mix1, mix2);
         }
+    }
+
+    #[test]
+    fn lightness() {
+        let c = Color(0.5, 0.5, 0.5);
+        let black = c.set_lightness(0.0).clamp_to_888().to_string();
+        let white = c.set_lightness(1.0).clamp_to_888().to_string();
+        assert_eq!(black, "000000");
+        assert_eq!(white, "ffffff");
     }
 }
 
