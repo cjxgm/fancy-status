@@ -51,6 +51,23 @@ pub fn parse_color(input: &str) -> Result<Color888, String> {
     grammar::color(input).map_err(|e| e.to_string())
 }
 
+/// Escape `input` so that it will only generate `Text` node,
+/// removing magic in the `input` string.
+pub fn escape_for_text(input: &str) -> String {
+    input.chars().map(escape_char_for_text).collect()
+}
+
+fn escape_char_for_text(ch: char) -> String {
+    match ch {
+        '<' | '>' | '(' | ')' | '[' | ']' | '{' | '}' | '\\' | '|' => {
+            let mut s = '\\'.to_string();
+            s.push(ch);
+            s
+        }
+        _ => ch.to_string(),
+    }
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
@@ -59,6 +76,13 @@ mod test {
     fn test() {
         println!("{:?}", parse("f{f1\\[  }234(123456: a<sd|h|>el\\)lo) \\("));
         println!("{:?}", parse("f{f1\\[\\}234(123456: a<sd|h|>el\\)lo) \\("));
+    }
+
+    #[test]
+    fn escape() {
+        let escaped = escape_for_text("hello <([{\\|}])> world");
+        let should_be = "hello \\<\\(\\[\\{\\\\\\|\\}\\]\\)\\> world";
+        assert_eq!(escaped, should_be);
     }
 }
 
