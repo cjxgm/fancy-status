@@ -1,5 +1,5 @@
 use color::{Color888, Colorf32};
-use fastup::{parse_for_first_node, Node, parse_color};
+use fastup::{self, Node, parse_for_first_node, parse_color};
 use super::error_node;
 
 #[derive(Debug, Copy, Clone, Default)]
@@ -21,10 +21,12 @@ fn node_from_args(args: Vec<String>) -> Node {
 fn try_node_from_args(args: Vec<String>) -> Result<Node, String> {
     assert_eq!(args.len(), 3);
 
-    let width = args[0].parse::<i32>().map_err(|e| e.to_string())?;
-    if width < 2 { return Err("(ccdd44: gradient width) must \\>= 2".into()) }
-    let color1 = parse_color(&args[1])?;
-    let color2 = parse_color(&args[2])?;
+    let width = args[0].parse::<i32>().map_err(escape_fastup)?;
+    if width < 2 {
+        return Err("(ccdd44: gradient width) must \\>= 2".into());
+    }
+    let color1 = parse_color(&args[1]).map_err(escape_fastup)?;
+    let color2 = parse_color(&args[2]).map_err(escape_fastup)?;
 
     Ok(gradient_node(width, color1, color2))
 }
@@ -43,5 +45,11 @@ fn gradient_node(width: i32, color1: Color888, color2: Color888) -> Node {
         .collect::<String>();
     let gradient = format!("(000000: {})", gradient);
     parse_for_first_node(&gradient).unwrap()
+}
+
+fn escape_fastup<T>(input: T) -> String
+    where T: ToString
+{
+    fastup::escape_for_text(&input.to_string())
 }
 
