@@ -42,7 +42,7 @@ fn parse_args() -> Result<Configuration> {
     let args = clap_app! {
         @app (app_from_crate!())
         (@arg EXPRESSION: default_value("<time>") "Evaluates Fastup EXPRESSION if no <FILE> is given")
-        (@arg FILE: -f --file +takes_value "Reads Fastup EXPRESSION from FILE and evaluates it")
+        (@arg FILE: -f --file +takes_value "Reads Fastup expression from FILE and evaluates it, ignoring <EXPRESSION> argument")
         (@arg format: -o --output +takes_value default_value("ansi") possible_values(&["ansi", "tmux", "html", "dump"]) "Sets output format")
     }.get_matches();
 
