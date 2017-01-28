@@ -6,10 +6,9 @@ version = "0.1.0"
 [dependencies]
 clap = "2.20"
 time = "0.1"
-sysinfo = "0.2"
-lazy_static = "0.2"
 fastup = { path = "fastup" }
 color = { path = "color" }
+stats-once = { path = "stats-once" }
 
 [workspace]
 

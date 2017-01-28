@@ -1,7 +1,5 @@
-#[macro_use]
-extern crate lazy_static;
+extern crate stats_once;
 extern crate time;
-extern crate sysinfo;
 extern crate color;
 extern crate fastup;
 use fastup::parse;

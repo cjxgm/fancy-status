@@ -1,0 +1,9 @@
+[package]
+name = "stats-once"
+version = "0.1.0"
+authors = ["Giumo X. Clanjor (哆啦比猫/兰威举) <cjxgm@126.com>"]
+
+[dependencies]
+sysinfo = "0.2"
+lazy_static = "0.2"
+

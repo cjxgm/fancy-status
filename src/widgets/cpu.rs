@@ -1,9 +1,7 @@
 use color::Colorf32;
 use fastup::{self, Node, parse_for_first_node, parse_color};
-use sysinfo::System;
+use stats_once::{CPU_USAGE_TOTAL, CPU_USAGE_PER_CORE};
 use super::error_node;
-use std::time::Duration;
-use std::thread::sleep;
 
 #[derive(Debug, Copy, Clone, Default)]
 pub struct Widget;
@@ -35,10 +33,10 @@ fn cpu_node(cold: Colorf32, hot: Colorf32) -> Node {
     const FG_LIGHTNESS: f32 = 0.7;
     const IDLE_LIGHTNESS: f32 = 0.3;
     const IDLE_THRESHOLD: f32 = 0.05;
-    const PROGRESS_INDICATOR: &'static str = "▁▂▃▄▅▆▇";
+    const PROGRESS_INDICATORS: &'static str = "▁▂▃▄▅▆▇";
 
-    let cpu_total = *CPU_TOTAL;
-    let cpu_usages = &CPU_USAGES;
+    let cpu_total = *CPU_USAGE_TOTAL;
+    let cpu_usages = &CPU_USAGE_PER_CORE;
 
     let bg_cold = cold.set_lightness(BG_LIGHTNESS);
     let bg_hot = hot.set_lightness(BG_LIGHTNESS);
@@ -50,7 +48,7 @@ fn cpu_node(cold: Colorf32, hot: Colorf32) -> Node {
 
     let fg_cold = cold.set_lightness(FG_LIGHTNESS);
     let fg_hot = hot.set_lightness(FG_LIGHTNESS);
-    let make_fg_color = |usage: f32| {
+    let fg_for = |usage: f32| {
         if usage <= IDLE_THRESHOLD {
             idle
         } else {
@@ -58,17 +56,18 @@ fn cpu_node(cold: Colorf32, hot: Colorf32) -> Node {
             fg_cold.mix(fg_hot, usage).clamp_to_888()
         }
     };
-    let make_cpu_indicator = |usage: f32| {
-        let len = PROGRESS_INDICATOR.chars().count() as f32;
+
+    let indicator_for = |usage: f32| {
+        let len = PROGRESS_INDICATORS.chars().count() as f32;
         let i = (len * usage).min(len - 1.0).max(0.0) as usize;
-        PROGRESS_INDICATOR.chars().nth(i).unwrap()
+        PROGRESS_INDICATORS.chars().nth(i).unwrap()
     };
 
     let cpu_usages = cpu_usages.iter()
-        .map(|&usage| format!("({}:{})", make_fg_color(usage), make_cpu_indicator(usage)))
+        .map(|&usage| format!("({}:{})", fg_for(usage), indicator_for(usage)))
         .collect::<String>();
     let total_usage = {
-        let color = make_fg_color(cpu_total);
+        let color = fg_for(cpu_total);
         let percent = (100.0 * cpu_total) as i32;
         let percent = format!("{:>3}%", percent);
         let percent = escape_fastup(percent);
@@ -79,52 +78,9 @@ fn cpu_node(cold: Colorf32, hot: Colorf32) -> Node {
     parse_for_first_node(&node).unwrap()
 }
 
-lazy_static! {
-    static ref _SYSTEM: System = {
-        let mut sys = System::new();
-        sleep(Duration::from_millis(100));
-        sys.refresh_system();
-        sys
-    };
-
-    /// ```rust,ignore
-    /// assert!(0.0 <= cpu_total && cpu_total <= 1.0);
-    /// // unstable feature awaits: assert!((0.0...1.0).contains(cpu_total));
-    /// ```
-    static ref CPU_TOTAL: f32 = {
-        let p = _SYSTEM.get_processor_list();
-        let usage = p[0].get_cpu_usage();       // p[0] is total cpu usage
-        normalize_float(usage)
-    };
-
-    /// ```rust,ignore
-    /// for usage in cpu_usages {
-    ///     assert!(0.0 <= usage && usage <= 1.0);
-    ///     // unstable feature awaits: assert!((0.0...1.0).contains(usage));
-    /// }
-    /// ```
-    static ref CPU_USAGES: Vec<f32> = {
-        let p = _SYSTEM.get_processor_list();
-        p.iter()
-            .skip(1)                            // p[1..] is individual cpu usage by core
-            .map(|x| x.get_cpu_usage())
-            .map(normalize_float)
-            .collect()
-    };
-}
-
 fn escape_fastup<T>(input: T) -> String
     where T: ToString
 {
     fastup::escape_for_text(&input.to_string())
-}
-
-fn normalize_float(x: f32) -> f32 {
-    match x {
-        x if x < 0.0 => 0.0,
-        x if x > 1.0 => 1.0,
-        x if x.is_nan() => 0.0,
-        _ => x,
-    }
 }
 
