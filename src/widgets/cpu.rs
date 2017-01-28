@@ -78,7 +78,10 @@ fn cpu_node(cold: Colorf32, hot: Colorf32) -> Node {
     parse_for_first_node(&node).unwrap()
 }
 
-/// return (total, [usage])
+/// Returns `(total, vec![usage, ...])`.
+///
+/// Any float `x` in the return value are guranteed
+/// that `0.0 <= x <= 1.0` holds true.
 fn cpu_usages() -> (f32, Vec<f32>) {
     let mut sys = System::new();
     // FIXME: Dirty hack by sleeping.
@@ -87,9 +90,11 @@ fn cpu_usages() -> (f32, Vec<f32>) {
     sys.refresh_system();
     let p = sys.get_processor_list();
     let total = p[0].get_cpu_usage();
+    let total = normalize_float(total);
     let usages = p.iter()
         .skip(1)
         .map(|x| x.get_cpu_usage())
+        .map(normalize_float)
         .collect::<Vec<_>>();
     (total, usages)
 }
@@ -98,5 +103,14 @@ fn escape_fastup<T>(input: T) -> String
     where T: ToString
 {
     fastup::escape_for_text(&input.to_string())
+}
+
+fn normalize_float(x: f32) -> f32 {
+    match x {
+        x if x < 0.0 => 0.0,
+        x if x > 1.0 => 1.0,
+        x if x.is_nan() => 0.0,
+        _ => x,
+    }
 }
 
