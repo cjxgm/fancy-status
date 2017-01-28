@@ -1,4 +1,4 @@
-use color::{Color888, Colorf32};
+use color::Colorf32;
 use fastup::{self, Node, parse_for_first_node, parse_color};
 use sysinfo::System;
 use super::error_node;
