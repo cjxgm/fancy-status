@@ -37,7 +37,8 @@ fn cpu_node(cold: Colorf32, hot: Colorf32) -> Node {
     const IDLE_THRESHOLD: f32 = 0.05;
     const PROGRESS_INDICATOR: &'static str = "▁▂▃▄▅▆▇";
 
-    let (cpu_total, cpu_usages) = cpu_usages();
+    let cpu_total = *CPU_TOTAL;
+    let cpu_usages = &CPU_USAGES;
 
     let bg_cold = cold.set_lightness(BG_LIGHTNESS);
     let bg_hot = hot.set_lightness(BG_LIGHTNESS);
@@ -63,8 +64,8 @@ fn cpu_node(cold: Colorf32, hot: Colorf32) -> Node {
         PROGRESS_INDICATOR.chars().nth(i).unwrap()
     };
 
-    let cpu_usages = cpu_usages.into_iter()
-        .map(|usage| format!("({}:{})", make_fg_color(usage), make_cpu_indicator(usage)))
+    let cpu_usages = cpu_usages.iter()
+        .map(|&usage| format!("({}:{})", make_fg_color(usage), make_cpu_indicator(usage)))
         .collect::<String>();
     let total_usage = {
         let color = make_fg_color(cpu_total);
@@ -78,25 +79,38 @@ fn cpu_node(cold: Colorf32, hot: Colorf32) -> Node {
     parse_for_first_node(&node).unwrap()
 }
 
-/// Returns `(total, vec![usage, ...])`.
-///
-/// Any float `x` in the return value are guranteed
-/// that `0.0 <= x <= 1.0` holds true.
-fn cpu_usages() -> (f32, Vec<f32>) {
-    let mut sys = System::new();
-    // FIXME: Dirty hack by sleeping.
-    // System refreshing should be done globally.
-    sleep(Duration::from_millis(100));
-    sys.refresh_system();
-    let p = sys.get_processor_list();
-    let total = p[0].get_cpu_usage();
-    let total = normalize_float(total);
-    let usages = p.iter()
-        .skip(1)
-        .map(|x| x.get_cpu_usage())
-        .map(normalize_float)
-        .collect::<Vec<_>>();
-    (total, usages)
+lazy_static! {
+    static ref _SYSTEM: System = {
+        let mut sys = System::new();
+        sleep(Duration::from_millis(100));
+        sys.refresh_system();
+        sys
+    };
+
+    /// ```rust,ignore
+    /// assert!(0.0 <= cpu_total && cpu_total <= 1.0);
+    /// // unstable feature awaits: assert!((0.0...1.0).contains(cpu_total));
+    /// ```
+    static ref CPU_TOTAL: f32 = {
+        let p = _SYSTEM.get_processor_list();
+        let usage = p[0].get_cpu_usage();       // p[0] is total cpu usage
+        normalize_float(usage)
+    };
+
+    /// ```rust,ignore
+    /// for usage in cpu_usages {
+    ///     assert!(0.0 <= usage && usage <= 1.0);
+    ///     // unstable feature awaits: assert!((0.0...1.0).contains(usage));
+    /// }
+    /// ```
+    static ref CPU_USAGES: Vec<f32> = {
+        let p = _SYSTEM.get_processor_list();
+        p.iter()
+            .skip(1)                            // p[1..] is individual cpu usage by core
+            .map(|x| x.get_cpu_usage())
+            .map(normalize_float)
+            .collect()
+    };
 }
 
 fn escape_fastup<T>(input: T) -> String
