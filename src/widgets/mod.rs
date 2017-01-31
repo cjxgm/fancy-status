@@ -49,6 +49,7 @@ factory! {
         time;
         gradient;
         cpu;
+        mem;
     }
 }
 
