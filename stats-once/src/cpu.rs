@@ -1,8 +1,9 @@
 use system::SYSTEM;
 
 lazy_static! {
-    /// ```rust,ignore
-    /// assert!(0.0 <= TOTAL && TOTAL <= 1.0);
+    /// ```rust
+    /// # use stats_once::cpu::*;
+    /// assert!(0.0 <= *TOTAL && *TOTAL <= 1.0);
     /// // unstable feature awaits: assert!((0.0...1.0).contains(TOTAL));
     /// ```
     pub static ref TOTAL: f32 = {
@@ -11,8 +12,9 @@ lazy_static! {
         normalize_float(usage)
     };
 
-    /// ```rust,ignore
-    /// for usage in PER_CORE {
+    /// ```rust
+    /// # use stats_once::cpu::*;
+    /// for &usage in PER_CORE.iter() {
     ///     assert!(0.0 <= usage && usage <= 1.0);
     ///     // unstable feature awaits: assert!((0.0...1.0).contains(usage));
     /// }
