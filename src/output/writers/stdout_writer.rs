@@ -6,7 +6,7 @@ pub struct StdoutWriter;
 
 impl Writer for StdoutWriter {
     fn write(&self, what: &str) {
-        println!("{}", what);
+        print!("{}", what);
     }
 }
 
