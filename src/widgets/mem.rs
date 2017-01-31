@@ -11,6 +11,7 @@ impl super::Widget for Widget {
     fn expand(&self, args: Vec<String>) -> Node {
         match args.len() {
             2 => node_from_args(args),
+            3 => node_from_args(args),  // debug only
             _ => error_node("(ccdd44: mem) takes 2 arguments: color-cold\\|color-hot"),
         }
     }
@@ -21,22 +22,28 @@ fn node_from_args(args: Vec<String>) -> Node {
 }
 
 fn try_node_from_args(args: Vec<String>) -> Result<Node, String> {
-    assert_eq!(args.len(), 2);
+    assert!(args.len() == 2 || args.len() == 3);
 
     let cold = parse_color(&args[0]).map_err(escape_fastup)?;
     let hot = parse_color(&args[1]).map_err(escape_fastup)?;
+    let mem_total = *MEM_TOTAL;
+    let mem_used = {
+        if args.len() == 3 {
+            args[2].parse().map_err(escape_fastup)?
+        } else {
+            *MEM_USED
+        }
+    };
 
-    Ok(mem_node(cold.into(), hot.into()))
+    Ok(mem_node(cold.into(), hot.into(), mem_used, mem_total))
 }
 
-fn mem_node(cold: Colorf32, hot: Colorf32) -> Node {
+fn mem_node(cold: Colorf32, hot: Colorf32, mem_used: i32, mem_total: i32) -> Node {
     const NONE_LIGHTNESS: f32 = 0.15;
     const FULL_LIGHTNESS: f32 = 0.7;
     const TEXT_LIGHTNESS_BOOST_NONE: f32 = 0.15;
     const TEXT_LIGHTNESS_BOOST_FULL: f32 = 0.25;
 
-    let mem_used = *MEM_USED;
-    let mem_total = *MEM_TOTAL;
     let mem_usage = (mem_used as f32) / (mem_total as f32);
 
     let none_cold = cold.set_lightness(NONE_LIGHTNESS);
@@ -48,7 +55,11 @@ fn mem_node(cold: Colorf32, hot: Colorf32) -> Node {
     let full_hot = hot.set_lightness(full_lightness);
     let full = full_cold.mix(full_hot, mem_usage);
 
-    let text_lightness_boost = remap(mem_usage, 0.0, 1.0, TEXT_LIGHTNESS_BOOST_NONE, TEXT_LIGHTNESS_BOOST_FULL);
+    let text_lightness_boost = remap(mem_usage,
+                                     0.0,
+                                     1.0,
+                                     TEXT_LIGHTNESS_BOOST_NONE,
+                                     TEXT_LIGHTNESS_BOOST_FULL);
     let text_lightness = full_lightness + text_lightness_boost;
     let text_cold = cold.set_lightness(text_lightness);
     let text_hot = hot.set_lightness(text_lightness);
@@ -66,11 +77,15 @@ fn mem_node(cold: Colorf32, hot: Colorf32) -> Node {
     let text = text.clamp_to_888();
     let partial = partial.clamp_to_888();
 
-    let (full_cells, partial_cell, none_cells) = zipper_split(&usage, fully_filled_cells as usize);
-    let full_cells = format!("[{}:{}]", full, escape_fastup(full_cells));
-    let partial_cell = format!("[{}:{}]", partial, escape_fastup(partial_cell));
-    let none_cells = format!("[{}:{}]", none, escape_fastup(none_cells));
-    let usage = format!("{}{}{}", full_cells, partial_cell, none_cells);
+    let partition = zipper_split(&usage, fully_filled_cells as usize);
+    let (full_cells, partial_cell, none_cells) = partition;
+    let usage = format!("[{}:{}][{}:{}][{}:{}]",
+                        full,
+                        escape_fastup(full_cells),
+                        partial,
+                        escape_fastup(partial_cell),
+                        none,
+                        escape_fastup(none_cells));
 
     let node = format!("({}:{})", text, usage);
     parse_for_first_node(&node).unwrap()
