@@ -10,6 +10,7 @@ impl super::Widget for Widget {
     fn expand(&self, args: Vec<String>) -> Node {
         match args.len() {
             2 => node_from_args(args),
+            x if x > 2 => node_from_args(args),     // debug only
             _ => error_node("(ccdd44: cpu) takes 2 arguments: color-cold\\|color-hot"),
         }
     }
@@ -20,23 +21,43 @@ fn node_from_args(args: Vec<String>) -> Node {
 }
 
 fn try_node_from_args(args: Vec<String>) -> Result<Node, String> {
-    assert_eq!(args.len(), 2);
+    assert!(args.len() >= 2);
 
     let cold = parse_color(&args[0]).map_err(escape_fastup)?;
     let hot = parse_color(&args[1]).map_err(escape_fastup)?;
+    if args.len() == 2 {
+        Ok(cpu_node(cold.into(),
+                    hot.into(),
+                    *CPU_USAGE_TOTAL,
+                    &CPU_USAGE_PER_CORE))
+    } else {
+        let usages = args.into_iter()
+            .skip(2)
+            .map(|arg| arg.parse::<f32>().map_err(escape_fastup))
+            .fold(Ok::<_, String>(Vec::new()),
+                  |usages, percent| match usages {
+                      Ok(mut usages) => {
+                          let percent = percent?;
+                          usages.push(percent / 100.0);
+                          Ok(usages)
+                      }
+                      Err(_) => usages,
+                  })?;
 
-    Ok(cpu_node(cold.into(), hot.into()))
+        let total: f32 = usages.iter().sum();
+        let len = usages.len() as f32;
+        let total = total / len;
+
+        Ok(cpu_node(cold.into(), hot.into(), total, &usages))
+    }
 }
 
-fn cpu_node(cold: Colorf32, hot: Colorf32) -> Node {
+fn cpu_node(cold: Colorf32, hot: Colorf32, cpu_total: f32, cpu_usages: &[f32]) -> Node {
     const BG_LIGHTNESS: f32 = 0.15;
     const FG_LIGHTNESS: f32 = 0.7;
     const IDLE_LIGHTNESS: f32 = 0.3;
     const IDLE_THRESHOLD: f32 = 0.05;
     const PROGRESS_INDICATORS: &'static str = "▁▂▃▄▅▆▇";
-
-    let cpu_total = *CPU_USAGE_TOTAL;
-    let cpu_usages = &CPU_USAGE_PER_CORE;
 
     let bg_cold = cold.set_lightness(BG_LIGHTNESS);
     let bg_hot = hot.set_lightness(BG_LIGHTNESS);
@@ -48,13 +69,11 @@ fn cpu_node(cold: Colorf32, hot: Colorf32) -> Node {
 
     let fg_cold = cold.set_lightness(FG_LIGHTNESS);
     let fg_hot = hot.set_lightness(FG_LIGHTNESS);
-    let fg_for = |usage: f32| {
-        if usage <= IDLE_THRESHOLD {
-            idle
-        } else {
-            let usage = (usage - IDLE_THRESHOLD) / (1.0 - IDLE_THRESHOLD);
-            fg_cold.mix(fg_hot, usage).clamp_to_888()
-        }
+    let fg_for = |usage: f32| if usage <= IDLE_THRESHOLD {
+        idle
+    } else {
+        let usage = (usage - IDLE_THRESHOLD) / (1.0 - IDLE_THRESHOLD);
+        fg_cold.mix(fg_hot, usage).clamp_to_888()
     };
 
     let indicator_for = |usage: f32| {
