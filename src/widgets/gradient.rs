@@ -1,4 +1,4 @@
-use color::{Color888, Colorf32};
+use color::Colorf32;
 use fastup::{self, Node, parse_for_first_node, parse_color};
 use super::error_node;
 
@@ -9,6 +9,7 @@ impl super::Widget for Widget {
     fn expand(&self, args: Vec<String>) -> Node {
         match args.len() {
             3 => node_from_args(args),
+            4...5 => node_from_args(args),   // debug only
             _ => error_node("(ccdd44: gradient) takes 3 arguments: width\\|color1\\|color2"),
         }
     }
@@ -19,22 +20,38 @@ fn node_from_args(args: Vec<String>) -> Node {
 }
 
 fn try_node_from_args(args: Vec<String>) -> Result<Node, String> {
-    assert_eq!(args.len(), 3);
+    assert!(args.len() == 3 || (4 <= args.len() && args.len() <= 5));
 
     let width = args[0].parse::<i32>().map_err(escape_fastup)?;
     if width < 2 {
         return Err("(ccdd44: gradient width) must \\>= 2".into());
     }
+
     let color1 = parse_color(&args[1]).map_err(escape_fastup)?;
     let color2 = parse_color(&args[2]).map_err(escape_fastup)?;
+    let mut color1 = Colorf32::from(color1);
+    let mut color2 = Colorf32::from(color2);
+
+    let parse_lightness = |i| -> Result<Option<f32>, String> {
+        if args.len() <= i || args[i].trim().len() == 0 {
+            Ok(None)
+        } else {
+            let lightness = args[i].parse().map_err(escape_fastup)?;
+            Ok(Some(lightness))
+        }
+    };
+    if let Some(lightness) = parse_lightness(3)? {
+        color1 = color1.set_lightness(lightness);
+    }
+    if let Some(lightness) = parse_lightness(4)? {
+        color2 = color2.set_lightness(lightness);
+    }
 
     Ok(gradient_node(width, color1, color2))
 }
 
-fn gradient_node(width: i32, color1: Color888, color2: Color888) -> Node {
+fn gradient_node(width: i32, color1: Colorf32, color2: Colorf32) -> Node {
     assert!(width >= 2);
-    let color1 = Colorf32::from(color1);
-    let color2 = Colorf32::from(color2);
     let gradient = (0..width)
         .map(|x| {
             let x = (x as f32) / ((width - 1) as f32);
