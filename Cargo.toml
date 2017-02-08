@@ -1,7 +1,7 @@
 [package]
 authors = ["Giumo X. Clanjor (哆啦比猫/兰威举) <cjxgm@126.com>"]
 name = "fancy-status"
-version = "0.2.1"
+version = "0.2.2"
 description = "Print a fancy statusline for tmux/etc. to show memory usage, cpu percent, date and time, network speed and so on."
 categories = ["command-line-utilities"]
 homepage = "https://github.com/cjxgm/fancy-status"
