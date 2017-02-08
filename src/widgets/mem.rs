@@ -11,7 +11,7 @@ impl super::Widget for Widget {
     fn expand(&self, args: Vec<String>) -> Node {
         match args.len() {
             2 => node_from_args(args),
-            3 => node_from_args(args),  // debug only
+            3 | 4 => node_from_args(args),  // debug only
             _ => error_node("(ccdd44: mem) takes 2 arguments: color-cold\\|color-hot"),
         }
     }
@@ -22,13 +22,19 @@ fn node_from_args(args: Vec<String>) -> Node {
 }
 
 fn try_node_from_args(args: Vec<String>) -> Result<Node, String> {
-    assert!(args.len() == 2 || args.len() == 3);
+    assert!(args.len() == 2 || (args.len() == 3 || args.len() == 4));
 
     let cold = parse_color(&args[0]).map_err(escape_fastup)?;
     let hot = parse_color(&args[1]).map_err(escape_fastup)?;
-    let mem_total = *MEM_TOTAL;
+    let mem_total = {
+        if args.len() >= 4 {
+            args[3].parse().map_err(escape_fastup)?
+        } else {
+            *MEM_TOTAL
+        }
+    };
     let mem_used = {
-        if args.len() == 3 {
+        if args.len() >= 3 {
             args[2].parse().map_err(escape_fastup)?
         } else {
             *MEM_USED
