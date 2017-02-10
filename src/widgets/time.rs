@@ -15,16 +15,19 @@ impl super::Widget for Widget {
 }
 
 fn node_from_time(t: Time) -> Node {
-    let source = format!("(000000: [ff8800: \\ {} ] \
-                                   (88ff00: {:04}-{:02}-{:02}) \
-                                   (55aaff: {:02}:{:02}:{:02}))",
-                         stylised_weekday(t.tm_wday),
-                         t.tm_year + 1900,
-                         t.tm_mon + 1,
-                         t.tm_mday,
-                         t.tm_hour,
-                         t.tm_min,
-                         t.tm_sec);
+    let source = format!("\
+        (000000:\
+            (88ff00:{:04}-{:02}-{:02})\
+            (ff8800:▐)[ff8800:{}](ff8800:▌)\
+            (33ccff:{:02}:{:02}:{:02})\
+        )",
+        t.tm_year + 1900,
+        t.tm_mon + 1,
+        t.tm_mday,
+        stylised_weekday(t.tm_wday),
+        t.tm_hour,
+        t.tm_min,
+        t.tm_sec);
     parse_for_first_node(&source).unwrap()
 }
 
