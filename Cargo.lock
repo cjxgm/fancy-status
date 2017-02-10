@@ -45,7 +45,7 @@ dependencies = [
 
 [[package]]
 name = "fancy-status"
-version = "0.2.1"
+version = "0.2.3"
 dependencies = [
  "clap 2.20.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "color 0.1.0",
