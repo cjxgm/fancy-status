@@ -21,13 +21,14 @@ fn dump_from_document(doc: &Document, indent: &str) -> String {
 const INDENTATION: &'static str = "    ";
 
 fn dump_from_document_followed(doc: &Document, indent: &str) -> String {
-    assert!(doc.0.len() > 0);
 
-    if doc.0.len() == 1 {
-        " ".to_string() + &dump_from_document(doc, indent)
-    } else {
-        let indent = format!("{}{}", INDENTATION, indent);
-        format!(":\n{}", indent) + &dump_from_document(doc, &indent)
+    match doc.0.len() {
+        0 => " <>".into(),
+        1 => " ".to_string() + &dump_from_document(doc, indent),
+        _ => {
+            let indent = format!("{}{}", INDENTATION, indent);
+            format!(":\n{}", indent) + &dump_from_document(doc, &indent)
+        }
     }
 }
 
