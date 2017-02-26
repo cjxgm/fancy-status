@@ -1,4 +1,6 @@
 use system::SYSTEM;
+use sysinfo::SystemExt;
+use sysinfo::ProcessorExt;
 
 lazy_static! {
     /// ```rust

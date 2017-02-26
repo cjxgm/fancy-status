@@ -1,6 +1,6 @@
 [package]
 name = "stats-once"
-version = "0.2.0"
+version = "0.2.1"
 authors = ["Giumo X. Clanjor (哆啦比猫/兰威举) <cjxgm@126.com>"]
 publish = false     # This crate is actually an internal part of fancy-status.
 

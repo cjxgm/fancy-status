@@ -1,4 +1,4 @@
-use sysinfo::System;
+use sysinfo::{System, SystemExt};
 use std::time::Duration;
 use std::thread::sleep;
 
