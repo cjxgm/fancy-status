@@ -1,7 +1,7 @@
 # Maintainer: Giumo Clanjor (哆啦比猫/兰威举) <cjxgm@126.com>
 pkgname=fancy-status
-pkgver=0.2.4
-pkgrel=2
+pkgver=0.3.0
+pkgrel=1
 makedepends=('rust')
 arch=('x86_64')
 pkgdesc="Print a fancy statusline for tmux/etc. to show memory usage, cpu percent, date and time, network speed and so on."
