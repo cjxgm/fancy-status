@@ -13,7 +13,6 @@
 
 #[macro_use]
 extern crate clap;
-#[macro_use]
 extern crate fancy_status as fast;
 
 mod app;
@@ -28,7 +27,7 @@ type Result<T> = ::std::result::Result<T, String>;
 
 fn main() {
     if let Err(err) = try_main() {
-        errln!("{}", err);
+        eprintln!("{}", err);
         exit(1);
     }
 }
