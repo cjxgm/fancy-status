@@ -50,6 +50,7 @@ factory! {
         gradient;
         cpu;
         mem;
+        net;
     }
 }
 
