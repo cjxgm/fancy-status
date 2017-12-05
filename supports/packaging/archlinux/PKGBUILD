@@ -1,20 +1,26 @@
-# Maintainer: Giumo X. Clanjor (哆啦比猫/兰威举) <cjxgm@126.com>
+# Maintainer: Giumo Clanjor (哆啦比猫/兰威举) <cjxgm@126.com>
 pkgname=fancy-status
 pkgver=0.2.4
-pkgrel=1
-makedepends=('rust' 'cargo')
-arch=('i686' 'x86_64' 'armv6h' 'armv7h')
+pkgrel=2
+makedepends=('rust')
+arch=('x86_64')
 pkgdesc="Print a fancy statusline for tmux/etc. to show memory usage, cpu percent, date and time, network speed and so on."
 url="https://github.com/cjxgm/fancy-status"
 license=('MIT')
+source=(
+    'fancy-status::git+file://'$(realpath ../../..)
+)
+sha256sums=(
+    SKIP
+)
 
 build() {
-    return 0
+    cd "$srcdir/fancy-status"
+    RUSTFLAGS="-C target-cpu=x86-64" cargo build --release
 }
 
 package() {
-    cd $srcdir
-    RUSTFLAGS="-C target-cpu=native" cargo install --root="$pkgdir/usr" --git=https://github.com/cjxgm/fancy-status
-    rm -f "$pkgdir/usr/.crates.toml"
+    cd "$srcdir/fancy-status"
+    install -Dm 755 "target/release/fancy-status" "$pkgdir/usr/bin/fancy-status"
 }
 
