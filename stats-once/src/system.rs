@@ -3,7 +3,7 @@ use std::time::Duration;
 use std::thread::sleep;
 
 /// In milliseconds.
-pub const STATS_HOLD_DURATION: u64 = 100;
+pub const STATS_HOLD_DURATION: u64 = 200;
 
 lazy_static! {
     /// Gather stats after holding for `STATS_HOLD_DURATION` milliseconds.
@@ -11,6 +11,7 @@ lazy_static! {
         let mut sys = System::new();
         sleep(Duration::from_millis(STATS_HOLD_DURATION));
         sys.refresh_system();
+        sys.refresh_network();
         sys
     };
 }
