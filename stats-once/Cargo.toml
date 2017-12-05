@@ -1,10 +1,10 @@
 [package]
 name = "stats-once"
-version = "0.2.1"
+version = "0.2.2"
 authors = ["Giumo X. Clanjor (哆啦比猫/兰威举) <cjxgm@126.com>"]
 publish = false     # This crate is actually an internal part of fancy-status.
 
 [dependencies]
-sysinfo = "0.2"
+sysinfo = "0.3"
 lazy_static = "0.2"
 
