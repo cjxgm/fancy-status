@@ -1,6 +1,6 @@
 # Maintainer: Giumo Clanjor (哆啦比猫/兰威举) <cjxgm@126.com>
 pkgname=fancy-status
-pkgver=0.3.0
+pkgver=0.3.1
 pkgrel=1
 makedepends=('rust')
 arch=('x86_64')
