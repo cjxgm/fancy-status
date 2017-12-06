@@ -1,8 +1,8 @@
 [package]
-authors = ["Giumo X. Clanjor (哆啦比猫/兰威举) <cjxgm@126.com>"]
+authors = ["Giumo Clanjor (Weiju Lan) <cjxgm2@gmail.com>"]
 name = "fancy-status"
 version = "0.3.0"
-description = "Print a fancy statusline for tmux/etc. to show memory usage, cpu percent, date and time, network speed and so on."
+description = "Print system statistics to truecolor Unicode-aware terminals in opinionated visualizations."
 categories = ["command-line-utilities"]
 homepage = "https://github.com/cjxgm/fancy-status"
 repository = "https://github.com/cjxgm/fancy-status"
