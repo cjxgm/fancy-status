@@ -38,12 +38,24 @@ fn try_main() -> Result<()> {
 }
 
 fn parse_args() -> Result<Configuration> {
+    let renderers = fast::renderers::list();
+    let widgets = fast::widgets::list();
+
     let args = clap_app! {
         @app (app_from_crate!())
+        (@arg widgets: -w --widgets "Prints names of all available widgets")
         (@arg EXPRESSION: default_value("<time>") "Evaluates Fastup EXPRESSION if no <FILE> is given")
         (@arg FILE: -f --file +takes_value "Reads Fastup expression from FILE and evaluates it, ignoring <EXPRESSION> argument")
-        (@arg format: -o --output +takes_value default_value("ansi") possible_values(&["ansi", "tmux", "html", "dump"]) "Sets output format")
+        (@arg format: -o --output +takes_value default_value(renderers[0]) possible_values(renderers) "Sets output format")
     }.get_matches();
+
+    if args.is_present("widgets") {
+        println!("Available widgets:");
+        for name in widgets {
+            println!("    <{}>", name)
+        }
+        std::process::exit(0);
+    }
 
     Ok(Configuration {
         expression: match args.value_of("FILE") {

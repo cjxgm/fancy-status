@@ -21,10 +21,13 @@ factory! {
     /// The `name` is the same as the renderer module's name.
     /// e.g. there is a `dump` module here, and you can `name` it `"dump"`.
     make {
-        dump;
-        html;
         ansi;
         tmux;
+        html;
+        dump;
     }
+
+    /// Get a list of renderer names
+    list;
 }
 

@@ -52,5 +52,8 @@ factory! {
         mem;
         net;
     }
+
+    /// Get a list of widgets names
+    list;
 }
 

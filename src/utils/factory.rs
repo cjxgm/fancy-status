@@ -31,6 +31,9 @@ macro_rules! factory {
                 $maker:ident;
             )*
         }
+
+        $(#[$list_attr:meta])*
+        list;
     ) => {
         $(
             pub mod $maker;
@@ -49,6 +52,16 @@ macro_rules! factory {
                 )*
                 _ => None,
             }
+        }
+
+        $(#[$list_attr])*
+        pub fn list() -> &'static [&'static str] {
+            const LIST: &'static [&'static str] = &[
+                $(
+                    stringify!($maker),
+                )*
+            ];
+            LIST
         }
     }
 }
