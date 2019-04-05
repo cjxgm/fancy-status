@@ -45,7 +45,7 @@ macro_rules! factory {
         }
 
         $(#[$make_attr])*
-        pub fn make(name: &str) -> Option<Box<$base>> {
+        pub fn make(name: &str) -> Option<Box<dyn $base>> {
             match name {
                 $(
                     stringify!($maker) => Some(Box::new($maker::$base::default())),

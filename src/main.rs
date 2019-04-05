@@ -13,7 +13,7 @@
 
 #[macro_use]
 extern crate clap;
-extern crate fancy_status as fast;
+use fancy_status as fast;
 
 mod app;
 
@@ -21,7 +21,7 @@ use std::process::exit;
 use std::path::Path;
 use std::fs::File;
 use std::io::Read;
-use app::{Configuration, run};
+use crate::app::{Configuration, run};
 
 type Result<T> = ::std::result::Result<T, String>;
 

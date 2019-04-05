@@ -9,7 +9,7 @@ impl super::Widget for Widget {
     fn expand(&self, args: Vec<String>) -> Node {
         match args.len() {
             3 => node_from_args(args),
-            4...5 => node_from_args(args),   // debug only
+            4..=5 => node_from_args(args),   // debug only
             _ => error_node("(ccdd44: gradient) takes 3 arguments: width\\|color1\\|color2"),
         }
     }

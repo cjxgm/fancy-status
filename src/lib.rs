@@ -1,7 +1,4 @@
-extern crate stats_once;
-extern crate time;
-extern crate color;
-extern crate fastup;
+use fastup;
 use fastup::parse;
 use std::fmt;
 
@@ -29,7 +26,7 @@ pub fn render_status(source: &str, renderer_name: &str) -> Result<String> {
 }
 
 impl fmt::Display for Error {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match *self {
             Error::ParseFailed(ref err) => write!(f, "{}", err),
             Error::RendererNotFound(ref name) => write!(f, "no such renderer: {}", name),

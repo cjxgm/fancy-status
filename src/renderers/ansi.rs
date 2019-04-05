@@ -37,7 +37,7 @@ impl<'a> From<&'a Environment> for String {
 }
 
 impl fmt::Display for Environment {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}", String::from(self))
     }
 }

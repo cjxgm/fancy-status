@@ -1,5 +1,5 @@
 extern crate palette;
 
 mod color;
-pub use color::*;
+pub use crate::color::*;
 

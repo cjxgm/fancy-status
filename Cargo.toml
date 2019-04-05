@@ -7,6 +7,7 @@ categories = ["command-line-utilities"]
 homepage = "https://github.com/cjxgm/fancy-status"
 repository = "https://github.com/cjxgm/fancy-status"
 license = "MIT"
+edition = "2018"
 
 [dependencies]
 clap = "2.20"

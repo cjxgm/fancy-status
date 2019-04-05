@@ -12,7 +12,7 @@ mod system;
 pub mod cpu;
 pub mod mem;
 pub mod net;
-pub use cpu::{TOTAL as CPU_USAGE_TOTAL, PER_CORE as CPU_USAGE_PER_CORE};
-pub use mem::{TOTAL as MEM_TOTAL, USED as MEM_USED};
-pub use net::{IN_SPEED as NET_DOWNLOAD_SPEED, OUT_SPEED as NET_UPLOAD_SPEED};
+pub use crate::cpu::{TOTAL as CPU_USAGE_TOTAL, PER_CORE as CPU_USAGE_PER_CORE};
+pub use crate::mem::{TOTAL as MEM_TOTAL, USED as MEM_USED};
+pub use crate::net::{IN_SPEED as NET_DOWNLOAD_SPEED, OUT_SPEED as NET_UPLOAD_SPEED};
 

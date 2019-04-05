@@ -1,4 +1,4 @@
-use system::{SYSTEM, STATS_HOLD_DURATION};
+use crate::system::{SYSTEM, STATS_HOLD_DURATION};
 use sysinfo::SystemExt;
 use sysinfo::NetworkExt;
 

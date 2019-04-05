@@ -1,6 +1,6 @@
 
-use fast::output::{StdoutWriter, Writer};
-use fast::render_status;
+use crate::fast::output::{StdoutWriter, Writer};
+use crate::fast::render_status;
 
 pub type Result<T> = ::std::result::Result<T, String>;
 

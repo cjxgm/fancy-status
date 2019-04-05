@@ -12,12 +12,12 @@
 
 extern crate color;
 mod parser;
-pub use parser::*;
+pub use crate::parser::*;
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use Node::*;
+    use crate::Node::*;
 
     fn html_from_document(doc: Document) -> String {
         doc.0.into_iter().map(html_from_node).collect()
@@ -29,7 +29,7 @@ mod tests {
             Foreground(color, doc) => format!("<span style=\"color: #{}\">{}</span>", color.clamp_to_888(), html_from_document(doc)),
             Background(color, doc) => format!("<span style=\"background-color: #{}\">{}</span>", color.clamp_to_888(), html_from_document(doc)),
             Bold(doc) => format!("<b>{}</b>", html_from_document(doc)),
-            Widget(name, args) => unreachable!(),
+            Widget(_name, _args) => unreachable!(),
         }
     }
 

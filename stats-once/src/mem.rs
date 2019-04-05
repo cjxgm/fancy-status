@@ -1,4 +1,4 @@
-use system::SYSTEM;
+use crate::system::SYSTEM;
 use sysinfo::SystemExt;
 
 lazy_static! {
