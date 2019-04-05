@@ -5,5 +5,5 @@ authors = ["Giumo X. Clanjor (哆啦比猫/兰威举) <cjxgm@126.com>"]
 publish = false     # Just no. Not in the current form.
 
 [dependencies]
-palette = "0.2"
+palette = "0.2.1"
 

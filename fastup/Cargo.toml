@@ -9,5 +9,5 @@ publish = false     # I don't see the point of publishing this.
 color = { path = "../color" }
 
 [build-dependencies]
-peg = "0.5"
+peg = "0.5.7"
 
