@@ -1,0 +1,6 @@
+#pragma once
+#define FANCY_STATUS_STYLE_BAD "\e[38;2;255;76;51m"
+#define FANCY_STATUS_STYLE_GOOD "\e[38;2;35;255;76m"
+#define FANCY_STATUS_STYLE_TITLE "\e[38;2;16;196;234m"
+#define FANCY_STATUS_STYLE_RESET "\e[0m"
+
