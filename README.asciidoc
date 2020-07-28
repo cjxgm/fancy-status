@@ -1,7 +1,5 @@
 = `fancy-status`: Fancy status line for tmux/etc.
 
-image:https://travis-ci.org/cjxgm/fancy-status.svg?branch=master["Build Status", link="https://travis-ci.org/cjxgm/fancy-status"]
-
 Licensed under the MIT License.
 
 *WORK IN PROGRESS*

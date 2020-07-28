@@ -1,1 +1,9 @@
-target
+/*
+!/.git?*
+
+!/src/
+
+!/LICENSE*
+!/README*
+!/Makefile
+
