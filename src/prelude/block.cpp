@@ -1,6 +1,7 @@
 #include "block.hpp"
 #include "utility.hpp"
-#include <new>
+#include "assert.hpp"
+#include <cstdlib>
 
 namespace fancy_status
 {
@@ -8,6 +9,18 @@ namespace fancy_status
     {
         namespace
         {
+            auto aligned_zalloc(size_t size, size_t alignment) noexcept -> byte*
+            {
+                auto allocated = static_cast<byte*>(std::aligned_alloc(alignment, size));
+                FANCY_STATUS_ASSERT_WITH(allocated, String_View{"Bad alloc."});
+
+                // Will be optimized into a memset call.
+                for (auto p=allocated; p<allocated+size; p++)
+                    *p = byte{};
+
+                return allocated;
+            }
+
             struct Block_Head final: Pinned
             {
                 Block_Head* next{};     // owned by Block_List::Impl
@@ -17,11 +30,11 @@ namespace fancy_status
 
                 ~Block_Head() noexcept
                 {
-                    delete[] block;
+                    std::free(block);
                 }
 
                 Block_Head(size_t block_size, size_t block_alignment, size_t content_alignment) noexcept
-                    : block{new (std::align_val_t(block_alignment)) byte[block_size]{}}
+                    : block{aligned_zalloc(block_size, block_alignment)}
                     , free_space{block, block_size}
                     , first_object_alignment{content_alignment}
                 {}

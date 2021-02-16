@@ -3,7 +3,6 @@
 #include "style.hpp"
 #include "assert.hpp"
 #include "block.hpp"
-#include <stdexcept>
 
 #if __COUNTER__ == __COUNTER__
     #error "Bad compiler"
@@ -70,21 +69,11 @@ namespace fancy_status
                         passed = true;
                 }
 
-                catch (std::exception const& e) {
-                    print(
-                        String_View{FANCY_STATUS_STYLE_BAD  "FAIL" FANCY_STATUS_STYLE_RESET "\x20"}
-                        , test_ctx.this_test->name
-                        , "\n\x20\x20" "Exception: "
-                        , e.what()
-                        , "\n"
-                    );
-                }
-
                 catch (...) {
                     print(
                         String_View{FANCY_STATUS_STYLE_BAD  "FAIL" FANCY_STATUS_STYLE_RESET "\x20"}
                         , test_ctx.this_test->name
-                        , "\n\x20\x20" "Unknown exception.\n"
+                        , "\n\x20\x20" "Exception thrown.\n"
                     );
                 }
 
