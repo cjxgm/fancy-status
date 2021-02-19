@@ -61,7 +61,6 @@ HPPS := $$(wildcard $(1)*.hpp)
 TARGET_NAME := $$(notdir $$(abspath $1))
 TARGET_OBJ := build/$$(TARGET_NAME).o
 TARGET_STAMP := build/$$(TARGET_NAME).stamp
-OBJECTS += $$(TARGET_OBJ)
 
 IS_PRELUDE := $$(call eq,$$(TARGET_NAME),prelude)
 INCLUDE_PRELUDE := $$(if $$(IS_PRELUDE),,-include $(PRELUDE_HPP))
@@ -71,10 +70,14 @@ DEP_NAMES += $$(if $$(IS_PRELUDE),,prelude)
 DEP_STAMPS := $$(patsubst %,build/%.stamp,$$(DEP_NAMES))
 
 $$(info $$(TARGET_NAME) REQUIRES $$(or $$(DEP_NAMES),NOTHING))
-$$(info $$(TARGET_NAME) COMPILES $$(CPPS))
+$$(info $$(TARGET_NAME) COMPILES $$(or $$(CPPS),NOTHING))
+
+ifneq "$$(strip $$(CPPS))" ""
+OBJECTS += $$(TARGET_OBJ)
 
 # Add another layer of indirection so that variables in shell commands are expanded right now.
 $$(eval $$(call compile-target,$$(TARGET_NAME),$$(TARGET_OBJ),$$(CPPS) $$(TARGET_STAMP) $$(DEP_STAMPS),$$(INCLUDE_PRELUDE) $$(CPPS)))
+endif
 
 $$(TARGET_STAMP): $$(HPPS) | build/
 	$$(file > $$@)
