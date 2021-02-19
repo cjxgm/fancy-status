@@ -1,3 +1,4 @@
+$(info -- SCAN --)
 CXX = g++
 BUILD_FLAGS = -std=c++17 -O3 -Wall -Wextra -ggdb
 CXXFLAGS = $(BUILD_FLAGS) -r
@@ -105,4 +106,6 @@ build/compile_commands.json: | build/
 .PRECIOUS: %/
 %/:
 	$(call hide-unless-error,MAKING DIRECTORY $*...,mkdir -p $@)
+
+$(info -- BUILD --)
 
