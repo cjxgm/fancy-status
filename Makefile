@@ -10,6 +10,7 @@ all: build/fancy-status build/compile_commands.json
 clean:
 	rm -rf build/
 run: all
+	build/fancy-status -t
 	build/fancy-status
 
 OBJECTS := # Will be filled later
