@@ -55,8 +55,8 @@ endef
 endef
 
 define build-directory
-CPPS := $$(wildcard $(1)*.cpp)
-HPPS := $$(wildcard $(1)*.hpp)
+CPPS := $$(sort $$(wildcard $(1)*.cpp))
+HPPS := $$(sort $$(wildcard $(1)*.hpp))
 
 TARGET_NAME := $$(notdir $$(abspath $1))
 TARGET_OBJ := build/$$(TARGET_NAME).o
@@ -65,7 +65,7 @@ TARGET_STAMP := build/$$(TARGET_NAME).stamp
 IS_PRELUDE := $$(call eq,$$(TARGET_NAME),prelude)
 INCLUDE_PRELUDE := $$(if $$(IS_PRELUDE),,-include $(PRELUDE_HPP))
 
-DEP_NAMES := $$(filter-out prelude,$$(notdir $$(realpath $$(wildcard $(1)*/))))
+DEP_NAMES := $$(filter-out prelude,$$(notdir $$(realpath $$(sort $$(wildcard $(1)*/)))))
 DEP_NAMES += $$(if $$(IS_PRELUDE),,prelude)
 DEP_STAMPS := $$(patsubst %,build/%.stamp,$$(DEP_NAMES))
 
@@ -84,7 +84,7 @@ $$(TARGET_STAMP): $$(HPPS) | build/
 endef
 
 MODULES := src/
-MODULES += $(wildcard src/*/)
+MODULES += $(sort $(wildcard src/*/))
 $(foreach module,$(MODULES),$(eval $(call build-directory,$(module))))
 
 $(eval $(call link-target,fancy-status,build/fancy-status,$(OBJECTS),$(OBJECTS)))
