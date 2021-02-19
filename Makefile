@@ -54,9 +54,19 @@ $(foreach source,$(filter %.o,$3),$(call compile-command-for,$2,$(source),$(CXX)
 endef
 endef
 
+define stamp-target
+$2: $3 Makefile | build/
+	$$(info STAMPING $1...)
+	$$(file > $$@)
+
+define COMPILE_COMMANDS +=
+$(foreach source,$(filter %.hpp %.inl,$3),$(call compile-command-for,$4,$(source),$(CXX) $(CXXFLAGS) -o $4 $5))
+endef
+endef
+
 define build-directory
 CPPS := $$(sort $$(wildcard $(1)*.cpp))
-HPPS := $$(sort $$(wildcard $(1)*.hpp))
+HPPS := $$(sort $$(wildcard $(1)*.hpp $(1)*.inl))
 
 TARGET_NAME := $$(notdir $$(abspath $1))
 TARGET_OBJ := build/$$(TARGET_NAME).o
@@ -79,8 +89,7 @@ OBJECTS += $$(TARGET_OBJ)
 $$(eval $$(call compile-target,$$(TARGET_NAME),$$(TARGET_OBJ),$$(CPPS) $$(TARGET_STAMP) $$(DEP_STAMPS),$$(INCLUDE_PRELUDE) $$(CPPS)))
 endif
 
-$$(TARGET_STAMP): $$(HPPS) | build/
-	$$(file > $$@)
+$$(eval $$(call stamp-target,$$(TARGET_NAME),$$(TARGET_STAMP),$$(HPPS),$$(TARGET_OBJ),$$(INCLUDE_PRELUDE) $$(or $$(CPPS),$$(HPPS))))
 endef
 
 MODULES := src/
