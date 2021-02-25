@@ -1,6 +1,6 @@
 $(info -- SCAN --)
 CXX = g++
-BUILD_FLAGS = -std=c++17 -O3 -Wall -Wextra -ggdb
+BUILD_FLAGS = -std=c++17 -O3 -Wall -Wextra -Werror=switch -Werror=return-type -ggdb
 CXXFLAGS = $(BUILD_FLAGS) -r
 LDFLAGS = $(BUILD_FLAGS) -Ur -fuse-ld=lld
 PRELUDE_HPP := src/prelude/prelude.hpp
