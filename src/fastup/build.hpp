@@ -14,8 +14,7 @@ namespace fancy_status::fastup
 
     // build_token: Create tokens into the token pool.
     // build_token("text"): Create Kind::text tokens.
-    // build_token('@'): Create Kind::hidden tokens.
-    // build_token('('): Create Kind::pair tokens.
+    // build_token('^'): Create Kind::mark tokens.
 
     template <class... Ts>
     auto build_tokens(Block_List const& token_pool, Ts&&... xs) noexcept -> void
