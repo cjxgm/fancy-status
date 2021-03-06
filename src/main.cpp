@@ -1,5 +1,7 @@
 #include "config/config.hpp"
 #include "config/help.hpp"
+#include "renderer/registry.hpp"
+#include "fastup/parse.hpp"
 
 namespace fancy_status
 {
@@ -26,8 +28,10 @@ namespace fancy_status
         if (cfg.show_renderer_list) {
             print("\n");
             print("RENDERERS:\n");
-            // TODO
-            print("    tty\n");
+            for (auto& nr: renderer::renderers()) {
+                if (nr.name.starts_with(".")) continue;     // skip hidden renderers
+                print("    ", nr.name, "\n");
+            }
         }
 
         if (cfg.run_unit_tests) {
@@ -36,9 +40,16 @@ namespace fancy_status
         }
 
         if (cfg.render_expression) {
-            // TODO
-            print("Using renderer \"", cfg.renderer_name, "\"\n");
-            print(cfg.expression, (cfg.no_newline ? String_View{} : String_View{"\n"}));
+            if (auto render = renderer::find_renderer(cfg.renderer_name)) {
+                Block_List storage;
+                auto document = fastup::parse(storage, cfg.expression);
+                auto output = render(storage, document);
+                dump(output);
+                if (!cfg.no_newline) dump("\n");
+            } else {
+                print("\n\nNo such renderer: ", cfg.renderer_name, "\n\n");
+                result = false;
+            }
         }
 
         if (!cfg.error_description.empty()) {
