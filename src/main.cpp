@@ -1,5 +1,6 @@
 #include "config/config.hpp"
 #include "config/help.hpp"
+#include "widget/registry.hpp"
 #include "renderer/registry.hpp"
 #include "fastup/parse.hpp"
 
@@ -21,8 +22,10 @@ namespace fancy_status
         if (cfg.show_widget_list) {
             print("\n");
             print("WIDGETS:\n");
-            // TODO
-            print("    <time>\n");
+            for (auto& nw: widget::widgets()) {
+                if (nw.name.starts_with(".")) continue;     // skip hidden widgets
+                print("    <", nw.name, ">\n");
+            }
         }
 
         if (cfg.show_renderer_list) {
