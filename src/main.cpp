@@ -1,5 +1,6 @@
 #include "config/config.hpp"
 #include "config/help.hpp"
+#include "widget/expand.hpp"
 #include "widget/registry.hpp"
 #include "renderer/registry.hpp"
 #include "fastup/parse.hpp"
@@ -46,6 +47,7 @@ namespace fancy_status
             if (auto render = renderer::find_renderer(cfg.renderer_name)) {
                 Block_List storage;
                 auto document = fastup::parse(storage, cfg.expression);
+                widget::expand_widgets(storage, document);
                 auto output = render(storage, document);
                 dump(output);
                 if (!cfg.no_newline) dump("\n");
